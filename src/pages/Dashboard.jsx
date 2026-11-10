@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
@@ -11,8 +11,12 @@ import { tasks as initialTasks } from "../data/tasks";
 function Dashboard() {
 
   // Main task state
-  const [taskList, setTaskList] = useState(initialTasks);
+ const [taskList, setTaskList]=useState(()=>{
+  const savedTasks=localStorage.getItem("studyflow_tasks");
 
+
+  return savedTasks ? JSON.parse(savedTasks) : initialTasks;
+ });
   // Form visibility
   const [showForm, setShowForm] = useState(false);
 
@@ -23,6 +27,14 @@ function Dashboard() {
     time: "",
     priority: "Medium"
   });
+
+
+  useEffect(()=>{
+    localStorage.setItem(
+      "studyflow_tasks",
+      JSON.stringify(taskList)
+    )
+  },[taskList]);
 
   // Calculate statistics
   const totalTasks = taskList.length;

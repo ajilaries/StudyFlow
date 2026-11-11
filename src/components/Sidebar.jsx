@@ -1,40 +1,32 @@
-function Sidebar() {
-  const menuItems = [
-    { icon: "⌂", label: "Dashboard" },
-    { icon: "▤", label: "My Tasks" },
-    { icon: "▦", label: "Calendar" },
-    { icon: "◷", label: "Study Sessions" },
-    { icon: "⚙", label: "Settings" }
-  ];
 
+import { NavLink } from "react-router-dom";
+
+const menuItems = [
+  { name: "Dashboard", path: "/" },
+  { name: "My Tasks", path: "/tasks" },
+  { name: "Calendar", path: "/calendar" },
+  { name: "Settings", path: "/settings" }
+];
+
+function Sidebar() {
   return (
     <aside className="sidebar">
+      <h2>StudyFlow</h2>
 
-      <div className="logo">
-        <span className="logo-icon">S</span>
-        <h2>StudyFlow</h2>
-      </div>
-
-      <p className="menu-heading">MENU</p>
-
-    <nav>
-        {menuItems.map((item,index)=>(
-            <div className={`menu-item ${index=== 0 ? "active":""}`}
-            key={item.label}>
-                <span>{item.icon}</span>
-                <p>{item.label}</p>
-            </div>
+      <nav className="sidebar-menu">
+        {menuItems.map((item) => (
+          <NavLink
+            key={item.path}
+            to={item.path}
+            end={item.path === "/"}
+            className={({ isActive }) =>
+              isActive ? "menu-item active" : "menu-item"
+            }
+          >
+            {item.name}
+          </NavLink>
         ))}
-    </nav>
-
-      <div className="sidebar-bottom">
-        <div className="profile-avatar">AJ</div>
-        <div>
-          <h4>Student</h4>
-          <p>Free Plan</p>
-        </div>
-      </div>
-
+      </nav>
     </aside>
   );
 }

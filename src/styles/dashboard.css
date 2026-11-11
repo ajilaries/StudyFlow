@@ -1,14 +1,28 @@
-/* Main Layout */
+
+/* =================================
+   MAIN APPLICATION LAYOUT
+================================= */
 
 .app-layout {
   display: flex;
   min-height: 100vh;
+  width: 100%;
 }
 
-/* Sidebar */
+.main-content {
+  flex: 1;
+  min-width: 0;
+  padding: 30px;
+}
+
+/* =================================
+   SIDEBAR
+================================= */
 
 .sidebar {
   width: 245px;
+  min-width: 245px;
+  min-height: 100vh;
   background: #ffffff;
   padding: 28px 20px;
   display: flex;
@@ -36,6 +50,10 @@
   font-size: 21px;
 }
 
+.sidebar h2 {
+  font-size: 21px;
+}
+
 .menu-heading {
   font-size: 11px;
   color: #999;
@@ -43,7 +61,8 @@
   letter-spacing: 1px;
 }
 
-.sidebar nav {
+.sidebar nav,
+.sidebar-menu {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -57,6 +76,8 @@
   border-radius: 9px;
   color: #777;
   cursor: pointer;
+  text-decoration: none;
+  transition: 0.2s ease;
 }
 
 .menu-item:hover,
@@ -94,15 +115,9 @@
   margin-top: 4px;
 }
 
-/* Main Content */
-
-.main-content {
-  flex: 1;
-  padding: 30px;
-  min-width: 0;
-}
-
-/* Header */
+/* =================================
+   HEADER
+================================= */
 
 .header {
   display: flex;
@@ -141,7 +156,9 @@
   font-weight: bold;
 }
 
-/* Welcome */
+/* =================================
+   WELCOME SECTION
+================================= */
 
 .welcome-section {
   display: flex;
@@ -166,13 +183,16 @@
   padding: 13px 18px;
   border-radius: 9px;
   font-weight: bold;
+  transition: 0.2s ease;
 }
 
 .primary-button:hover {
   background: #5140ca;
 }
 
-/* Statistics */
+/* =================================
+   STATISTICS CARDS
+================================= */
 
 .stats-grid {
   display: grid;
@@ -214,7 +234,9 @@
   color: #999;
 }
 
-/* Dashboard Content */
+/* =================================
+   DASHBOARD CONTENT
+================================= */
 
 .dashboard-content {
   display: grid;
@@ -256,7 +278,9 @@
   font-weight: bold;
 }
 
-/* Task Items */
+/* =================================
+   TASK ITEMS
+================================= */
 
 .task-list {
   display: flex;
@@ -290,8 +314,8 @@
   display: grid;
   place-items: center;
   font-size: 13px;
-  background:transparent;
-  padding:0;
+  background: transparent;
+  padding: 0;
   cursor: pointer;
 }
 
@@ -338,7 +362,9 @@
   color: #32a66b;
 }
 
-/* Progress */
+/* =================================
+   PROGRESS SECTION
+================================= */
 
 .progress-circle {
   width: 165px;
@@ -381,55 +407,9 @@
   color: #777;
 }
 
-/* Responsive Layout */
-
-@media (max-width: 1100px) {
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .dashboard-content {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 700px) {
-  .sidebar {
-    display: none;
-  }
-
-  .main-content {
-    padding: 18px;
-  }
-
-  .welcome-section {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 18px;
-  }
-
-  .welcome-section h1 {
-    font-size: 20px;
-  }
-
-  .stats-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
-
-  .stat-card {
-    padding: 14px;
-  }
-
-  .stat-card h2 {
-    font-size: 22px;
-  }
-
-  .header-user span {
-    display: none;
-  }
-}
-/* Task Form */
+/* =================================
+   TASK FORM
+================================= */
 
 .task-form {
   background: white;
@@ -437,7 +417,6 @@
   border-radius: 13px;
   border: 1px solid #eee;
   margin-bottom: 25px;
-
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -475,6 +454,10 @@
   border-radius: 9px;
 }
 
+/* =================================
+   TASK ACTIONS
+================================= */
+
 .task-actions {
   display: flex;
   align-items: center;
@@ -498,4 +481,85 @@
   text-align: center;
   padding: 30px 10px;
   font-size: 14px;
+}
+
+/* =================================
+   RESPONSIVE LAYOUT
+================================= */
+
+@media (max-width: 1100px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .app-layout {
+    flex-direction: column;
+  }
+
+  /* Keep sidebar visible on smaller screens */
+  .sidebar {
+    width: 100%;
+    min-width: 0;
+    min-height: auto;
+    padding: 15px;
+    border-right: none;
+    border-bottom: 1px solid #eeeeF2;
+  }
+
+  .sidebar nav,
+  .sidebar-menu {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .logo {
+    margin-bottom: 15px;
+  }
+
+  .main-content {
+    padding: 18px;
+  }
+
+  .welcome-section {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .welcome-section h1 {
+    font-size: 20px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .stat-card {
+    padding: 14px;
+  }
+
+  .stat-card h2 {
+    font-size: 22px;
+  }
+
+  .header-user span {
+    display: none;
+  }
+}
+
+@media (max-width: 400px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .task-item {
+    align-items: flex-start;
+  }
 }

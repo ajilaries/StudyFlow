@@ -1,8 +1,6 @@
 
 import { useState, useEffect } from "react";
 
-import Sidebar from "../components/Sidebar";
-import Header from "../components/Header";
 import StatCard from "../components/StatCard";
 import TaskItem from "../components/TaskItem";
 
@@ -10,17 +8,19 @@ import { tasks as initialTasks } from "../data/tasks";
 
 function Dashboard() {
 
-  // Main task state
- const [taskList, setTaskList]=useState(()=>{
-  const savedTasks=localStorage.getItem("studyflow_tasks");
+  // 1. Main task state with localStorage initialization
+  const [taskList, setTaskList] = useState(() => {
+    const savedTasks = localStorage.getItem("studyflow_tasks");
 
+    return savedTasks
+      ? JSON.parse(savedTasks)
+      : initialTasks;
+  });
 
-  return savedTasks ? JSON.parse(savedTasks) : initialTasks;
- });
-  // Form visibility
+  // 2. Form visibility
   const [showForm, setShowForm] = useState(false);
 
-  // Form input state
+  // 3. Form input state
   const [newTask, setNewTask] = useState({
     title: "",
     subject: "",
@@ -28,15 +28,15 @@ function Dashboard() {
     priority: "Medium"
   });
 
-
-  useEffect(()=>{
+  // 4. Save tasks whenever taskList changes
+  useEffect(() => {
     localStorage.setItem(
       "studyflow_tasks",
       JSON.stringify(taskList)
-    )
-  },[taskList]);
+    );
+  }, [taskList]);
 
-  // Calculate statistics
+  // 5. Calculate statistics
   const totalTasks = taskList.length;
 
   const completedTasks = taskList.filter(
@@ -45,9 +45,8 @@ function Dashboard() {
 
   const pendingTasks = totalTasks - completedTasks;
 
-  // Toggle task completion
+  // 6. Toggle task completion
   function toggleTask(taskId) {
-
     setTaskList((currentTasks) =>
       currentTasks.map((task) =>
         task.id === taskId
@@ -55,24 +54,20 @@ function Dashboard() {
           : task
       )
     );
-
   }
 
-  // Handle form inputs
+  // 7. Handle form inputs
   function handleChange(event) {
-
     const { name, value } = event.target;
 
     setNewTask((previousTask) => ({
       ...previousTask,
       [name]: value
     }));
-
   }
 
-  // Add new task
+  // 8. Add new task
   function handleAddTask(event) {
-
     event.preventDefault();
 
     if (!newTask.title.trim() || !newTask.subject.trim()) {
@@ -101,218 +96,228 @@ function Dashboard() {
     });
 
     setShowForm(false);
-
   }
 
-  // Delete task
+  // 9. Delete task
   function deleteTask(taskId) {
-
     setTaskList((currentTasks) =>
       currentTasks.filter(
         (task) => task.id !== taskId
       )
     );
-
   }
 
+  // 10. Dashboard UI
   return (
-    <div className="app-layout">
+    <>
 
-      <Sidebar />
+      {/* Welcome Section */}
 
-      <main className="main-content">
+      <section className="welcome-section">
 
-        <Header />
+        <div>
+          <h1>Welcome back! 👋</h1>
+          <p>Let's make today productive.</p>
+        </div>
 
-        <section className="welcome-section">
+        <button
+          className="primary-button"
+          onClick={() => setShowForm(!showForm)}
+        >
+          + Add New Task
+        </button>
 
-          <div>
-            <h1>Welcome back, Ajil! 👋</h1>
-            <p>Let's make today productive.</p>
-          </div>
+      </section>
 
-          <button
-            className="primary-button"
-            onClick={() => setShowForm(!showForm)}
+
+      {/* Add Task Form */}
+
+      {showForm && (
+
+        <form
+          className="task-form"
+          onSubmit={handleAddTask}
+        >
+
+          <h2>Create New Task</h2>
+
+          <input
+            type="text"
+            name="title"
+            placeholder="Task title"
+            value={newTask.title}
+            onChange={handleChange}
+            required
+          />
+
+          <input
+            type="text"
+            name="subject"
+            placeholder="Subject"
+            value={newTask.subject}
+            onChange={handleChange}
+            required
+          />
+
+          <input
+            type="text"
+            name="time"
+            placeholder="Time (e.g. 10:00 AM)"
+            value={newTask.time}
+            onChange={handleChange}
+          />
+
+          <select
+            name="priority"
+            value={newTask.priority}
+            onChange={handleChange}
           >
-            + Add New Task
-          </button>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
 
-        </section>
+          <div className="form-actions">
 
-        {/* Add Task Form */}
-
-        {showForm && (
-
-          <form
-            className="task-form"
-            onSubmit={handleAddTask}
-          >
-
-            <h2>Create New Task</h2>
-
-            <input
-              type="text"
-              name="title"
-              placeholder="Task title"
-              value={newTask.title}
-              onChange={handleChange}
-              required
-            />
-
-            <input
-              type="text"
-              name="subject"
-              placeholder="Subject"
-              value={newTask.subject}
-              onChange={handleChange}
-              required
-            />
-
-            <input
-              type="text"
-              name="time"
-              placeholder="Time (e.g. 10:00 AM)"
-              value={newTask.time}
-              onChange={handleChange}
-            />
-
-            <select
-              name="priority"
-              value={newTask.priority}
-              onChange={handleChange}
+            <button
+              type="submit"
+              className="primary-button"
             >
-              <option value="Low">Low</option>
-              <option value="Medium">Medium</option>
-              <option value="High">High</option>
-            </select>
+              Save Task
+            </button>
 
-            <div className="form-actions">
+            <button
+              type="button"
+              className="cancel-button"
+              onClick={() => setShowForm(false)}
+            >
+              Cancel
+            </button>
 
-              <button type="submit" className="primary-button">
-                Save Task
-              </button>
+          </div>
 
-              <button
-                type="button"
-                className="cancel-button"
-                onClick={() => setShowForm(false)}
-              >
-                Cancel
-              </button>
+        </form>
 
+      )}
+
+
+      {/* Dynamic Statistics */}
+
+      <section className="stats-grid">
+
+        <StatCard
+          title="Total Tasks"
+          value={totalTasks}
+          icon="📚"
+          description="All your tasks"
+        />
+
+        <StatCard
+          title="Completed"
+          value={completedTasks}
+          icon="✓"
+          description="Tasks finished"
+        />
+
+        <StatCard
+          title="Pending"
+          value={pendingTasks}
+          icon="◷"
+          description="Tasks remaining"
+        />
+
+        <StatCard
+          title="Study Hours"
+          value="32h"
+          icon="⌚"
+          description="This month"
+        />
+
+      </section>
+
+
+      {/* Dashboard Content */}
+
+      <section className="dashboard-content">
+
+        {/* Today's Tasks */}
+
+        <div className="tasks-section">
+
+          <div className="section-heading">
+
+            <div>
+              <h2>Today's Tasks</h2>
+              <p>Your scheduled activities</p>
             </div>
 
-          </form>
+            <button className="text-button">
+              View All
+            </button>
 
-        )}
+          </div>
 
-        {/* Dynamic Statistics */}
 
-        <section className="stats-grid">
+          {/* Task List */}
 
-          <StatCard
-            title="Total Tasks"
-            value={totalTasks}
-            icon="📚"
-            description="All your tasks"
-          />
+          <div className="task-list">
 
-          <StatCard
-            title="Completed"
-            value={completedTasks}
-            icon="✓"
-            description="Tasks finished"
-          />
+            {taskList.length === 0 ? (
 
-          <StatCard
-            title="Pending"
-            value={pendingTasks}
-            icon="◷"
-            description="Tasks remaining"
-          />
+              <p className="empty-message">
+                No tasks available. Add your first task!
+              </p>
 
-          <StatCard
-            title="Study Hours"
-            value="32h"
-            icon="⌚"
-            description="This month"
-          />
+            ) : (
 
-        </section>
+              taskList.map((task) => (
 
-        {/* Task List */}
+                <TaskItem
+                  key={task.id}
+                  task={task}
+                  onToggle={toggleTask}
+                  onDelete={deleteTask}
+                />
 
-        <section className="dashboard-content">
+              ))
 
-          <div className="tasks-section">
+            )}
 
-            <div className="section-heading">
+          </div>
 
-              <div>
-                <h2>Today's Tasks</h2>
-                <p>Your scheduled activities</p>
-              </div>
+        </div>
 
-              <button className="text-button">
-                View All
-              </button>
 
-            </div>
+        {/* Weekly Progress */}
 
-            <div className="task-list">
+        <div className="progress-section">
 
-              {taskList.length === 0 ? (
+          <h2>Weekly Progress</h2>
 
-                <p className="empty-message">
-                  No tasks available. Add your first task!
-                </p>
+          <p>Your learning activity this week</p>
 
-              ) : (
+          <div className="progress-circle">
 
-                taskList.map((task) => (
-
-                  <TaskItem
-                    key={task.id}
-                    task={task}
-                    onToggle={toggleTask}
-                    onDelete={deleteTask}
-                  />
-
-                ))
-
-              )}
-
+            <div className="progress-inner">
+              <h2>75%</h2>
+              <span>Completed</span>
             </div>
 
           </div>
 
-          <div className="progress-section">
+          <div className="progress-info">
 
-            <h2>Weekly Progress</h2>
-            <p>Your learning activity this week</p>
+            <span>Weekly goal</span>
 
-            <div className="progress-circle">
-
-              <div className="progress-inner">
-                <h2>75%</h2>
-                <span>Completed</span>
-              </div>
-
-            </div>
-
-            <div className="progress-info">
-              <span>Weekly goal</span>
-              <strong>15 / 20 hours</strong>
-            </div>
+            <strong>15 / 20 hours</strong>
 
           </div>
 
-        </section>
+        </div>
 
-      </main>
+      </section>
 
-    </div>
+    </>
   );
 }
 

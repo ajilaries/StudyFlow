@@ -1,32 +1,40 @@
+import {
+  useState,
+  useEffect
+} from "react";
 
-import { createContext, useContext, useState, useEffect } from "react";
-
+import  TaskContext  from "./TaskContext.js";
 import { tasks as initialTasks } from "../data/tasks";
 
-// 1. Create Context
-const TaskContext = createContext();
-
-// 2. Create Provider
 export function TaskProvider({ children }) {
 
-  // Shared task state
   const [taskList, setTaskList] = useState(() => {
-    const savedTasks = localStorage.getItem("studyflow_tasks");
+    try {
+      const savedTasks = localStorage.getItem("studyflow_tasks");
 
-    return savedTasks
-      ? JSON.parse(savedTasks)
-      : initialTasks;
+      if (savedTasks) {
+        const parsedTasks = JSON.parse(savedTasks);
+        return Array.isArray(parsedTasks) ? parsedTasks : initialTasks;
+      }
+
+      return initialTasks;
+    } catch (error) {
+      console.error("Failed to load tasks:", error);
+      return initialTasks;
+    }
   });
 
-  // Save tasks whenever taskList changes
   useEffect(() => {
-    localStorage.setItem(
-      "studyflow_tasks",
-      JSON.stringify(taskList)
-    );
+    try {
+      localStorage.setItem(
+        "studyflow_tasks",
+        JSON.stringify(taskList)
+      );
+    } catch (error) {
+      console.error("Failed to save tasks:", error);
+    }
   }, [taskList]);
 
-  // Toggle task completion
   function toggleTask(taskId) {
     setTaskList((currentTasks) =>
       currentTasks.map((task) =>
@@ -37,7 +45,6 @@ export function TaskProvider({ children }) {
     );
   }
 
-  // Add a new task
   function addTask(taskData) {
     const newTask = {
       id: Date.now(),
@@ -54,20 +61,33 @@ export function TaskProvider({ children }) {
     ]);
   }
 
-  // Delete a task
-  function deleteTask(taskId) {
+  function updateTask(taskId, updatedData) {
     setTaskList((currentTasks) =>
-      currentTasks.filter(
-        (task) => task.id !== taskId
+      currentTasks.map((task) =>
+        task.id === taskId
+          ? {
+              ...task,
+              title: updatedData.title.trim(),
+              subject: updatedData.subject.trim(),
+              time: updatedData.time.trim() || "Not scheduled",
+              priority: updatedData.priority
+            }
+          : task
       )
     );
   }
 
-  // Values shared with other components
+  function deleteTask(taskId) {
+    setTaskList((currentTasks) =>
+      currentTasks.filter((task) => task.id !== taskId)
+    );
+  }
+
   const value = {
     taskList,
     toggleTask,
     addTask,
+    updateTask,
     deleteTask
   };
 
@@ -76,17 +96,4 @@ export function TaskProvider({ children }) {
       {children}
     </TaskContext.Provider>
   );
-}
-
-// 3. Custom Hook
-export function useTasks() {
-  const context = useContext(TaskContext);
-
-  if (!context) {
-    throw new Error(
-      "useTasks must be used inside TaskProvider"
-    );
-  }
-
-  return context;
 }

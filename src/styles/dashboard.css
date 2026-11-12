@@ -563,3 +563,140 @@
     align-items: flex-start;
   }
 }
+
+/* =================================
+   TASK MANAGEMENT PAGE
+================================= */
+
+.tasks-page {
+  width: 100%;
+}
+
+.tasks-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin: 25px 0 20px;
+  flex-wrap: wrap;
+}
+
+.task-search {
+  flex: 1;
+  min-width: 200px;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 9px;
+  outline: none;
+  font-size: 13px;
+}
+
+.task-search:focus,
+.task-sort:focus {
+  border-color: #6755e8;
+}
+
+.task-filters {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.filter-button {
+  background: white;
+  color: #777;
+  border: 1px solid #eee;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.filter-button:hover,
+.filter-button.active {
+  background: #f0edff;
+  color: #6755e8;
+  border-color: #dcd5ff;
+}
+
+.task-sort {
+  padding: 11px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: white;
+  outline: none;
+  font-size: 12px;
+}
+
+.edit-button {
+  background: #f0edff;
+  color: #6755e8;
+  padding: 7px 11px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.edit-button:hover {
+  background: #e4dfff;
+}
+
+.form-error {
+  color: #e45b5b;
+  background: #fff0f0;
+  padding: 10px;
+  border-radius: 7px;
+  font-size: 13px;
+}
+
+.task-form label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+}
+
+.task-form input,
+.task-form select {
+  box-sizing: border-box;
+}
+
+.tasks-section {
+  margin-top: 10px;
+}
+
+@media (max-width: 700px) {
+  .tasks-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .task-search,
+  .task-sort {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .task-filters {
+    width: 100%;
+  }
+
+  .task-item {
+    flex-wrap: wrap;
+  }
+
+  .task-actions {
+    margin-left: 32px;
+  }
+}
+
+@media (max-width: 400px) {
+  .task-actions {
+    gap: 7px;
+  }
+
+  .priority {
+    padding: 5px 8px;
+  }
+}

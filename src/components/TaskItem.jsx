@@ -1,6 +1,5 @@
 
-function TaskItem({ task, onToggle, onDelete }) {
-
+function TaskItem({ task, onToggle, onDelete, onEdit }) {
   return (
     <div className="task-item">
 
@@ -22,7 +21,9 @@ function TaskItem({ task, onToggle, onDelete }) {
             {task.title}
           </h4>
 
-          <p>{task.subject} · {task.time}</p>
+          <p>
+            {task.subject} · {task.time}
+          </p>
         </div>
 
       </div>
@@ -32,6 +33,15 @@ function TaskItem({ task, onToggle, onDelete }) {
         <span className={`priority ${task.priority.toLowerCase()}`}>
           {task.priority}
         </span>
+
+        <button
+          type="button"
+          className="edit-button"
+          onClick={() => onEdit(task)}
+          aria-label={`Edit ${task.title}`}
+        >
+          Edit
+        </button>
 
         <button
           type="button"

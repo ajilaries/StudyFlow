@@ -563,3 +563,242 @@
     align-items: flex-start;
   }
 }
+
+/* =================================
+   TASK MANAGEMENT PAGE
+================================= */
+
+.tasks-page {
+  width: 100%;
+}
+
+.tasks-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin: 25px 0 20px;
+  flex-wrap: wrap;
+}
+
+.task-search {
+  flex: 1;
+  min-width: 200px;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 9px;
+  outline: none;
+  font-size: 13px;
+}
+
+.task-search:focus,
+.task-sort:focus {
+  border-color: #6755e8;
+}
+
+.task-filters {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.filter-button {
+  background: white;
+  color: #777;
+  border: 1px solid #eee;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.filter-button:hover,
+.filter-button.active {
+  background: #f0edff;
+  color: #6755e8;
+  border-color: #dcd5ff;
+}
+
+.task-sort {
+  padding: 11px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: white;
+  outline: none;
+  font-size: 12px;
+}
+
+.edit-button {
+  background: #f0edff;
+  color: #6755e8;
+  padding: 7px 11px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.edit-button:hover {
+  background: #e4dfff;
+}
+
+.form-error {
+  color: #e45b5b;
+  background: #fff0f0;
+  padding: 10px;
+  border-radius: 7px;
+  font-size: 13px;
+}
+
+.task-form label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+}
+
+.task-form input,
+.task-form select {
+  box-sizing: border-box;
+}
+
+.tasks-section {
+  margin-top: 10px;
+}
+
+@media (max-width: 700px) {
+  .tasks-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .task-search,
+  .task-sort {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .task-filters {
+    width: 100%;
+  }
+
+  .task-item {
+    flex-wrap: wrap;
+  }
+
+  .task-actions {
+    margin-left: 32px;
+  }
+}
+
+@media (max-width: 400px) {
+  .task-actions {
+    gap: 7px;
+  }
+
+  .priority {
+    padding: 5px 8px;
+  }
+}
+
+/* ================================
+   Study Timer
+================================ */
+
+.study-timer {
+  background: #ffffff;
+  border: 1px solid #eeeeF2;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.timer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.timer-header h2 {
+  margin: 0 0 6px;
+}
+
+.timer-header p {
+  color: #888;
+  margin: 0;
+}
+
+.timer-status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: #f1f1f5;
+  font-size: 13px;
+  text-transform: capitalize;
+}
+
+.timer-status.running {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.timer-status.paused {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.timer-display {
+  text-align: center;
+  padding: 32px 12px;
+}
+
+.timer-display h1 {
+  font-size: 48px;
+  letter-spacing: 4px;
+  margin: 0 0 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.timer-display p {
+  color: #777;
+  margin: 0;
+}
+
+.timer-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.timer-controls select {
+  padding: 11px 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  min-width: 200px;
+}
+
+.timer-controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+  .study-timer {
+    padding: 18px;
+  }
+
+  .timer-display h1 {
+    font-size: 36px;
+  }
+
+  .timer-controls {
+    flex-direction: column;
+  }
+
+  .timer-controls select,
+  .timer-controls button {
+    width: 100%;
+  }
+}

@@ -1,42 +1,32 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import StatCard from "../components/StatCard";
 import TaskItem from "../components/TaskItem";
+import { useTasks } from "../context/useTasks";
+import StudyTimer from "../components/StudyTimer";
 
-import { tasks as initialTasks } from "../data/tasks";
 
 function Dashboard() {
+  const {
+    taskList,
+    addTask,
+    updateTask,
+    toggleTask,
+    deleteTask
+  } = useTasks();
 
-  // 1. Main task state with localStorage initialization
-  const [taskList, setTaskList] = useState(() => {
-    const savedTasks = localStorage.getItem("studyflow_tasks");
-
-    return savedTasks
-      ? JSON.parse(savedTasks)
-      : initialTasks;
-  });
-
-  // 2. Form visibility
   const [showForm, setShowForm] = useState(false);
+  const [editingTask, setEditingTask] = useState(null);
 
-  // 3. Form input state
-  const [newTask, setNewTask] = useState({
+  const [formData, setFormData] = useState({
     title: "",
     subject: "",
     time: "",
     priority: "Medium"
   });
 
-  // 4. Save tasks whenever taskList changes
-  useEffect(() => {
-    localStorage.setItem(
-      "studyflow_tasks",
-      JSON.stringify(taskList)
-    );
-  }, [taskList]);
-
-  // 5. Calculate statistics
+  // Task statistics
   const totalTasks = taskList.length;
 
   const completedTasks = taskList.filter(
@@ -45,107 +35,109 @@ function Dashboard() {
 
   const pendingTasks = totalTasks - completedTasks;
 
-  // 6. Toggle task completion
-  function toggleTask(taskId) {
-    setTaskList((currentTasks) =>
-      currentTasks.map((task) =>
-        task.id === taskId
-          ? { ...task, completed: !task.completed }
-          : task
-      )
-    );
-  }
-
-  // 7. Handle form inputs
-  function handleChange(event) {
-    const { name, value } = event.target;
-
-    setNewTask((previousTask) => ({
-      ...previousTask,
-      [name]: value
-    }));
-  }
-
-  // 8. Add new task
-  function handleAddTask(event) {
-    event.preventDefault();
-
-    if (!newTask.title.trim() || !newTask.subject.trim()) {
-      return;
-    }
-
-    const task = {
-      id: Date.now(),
-      title: newTask.title.trim(),
-      subject: newTask.subject.trim(),
-      time: newTask.time || "Not scheduled",
-      priority: newTask.priority,
-      completed: false
-    };
-
-    setTaskList((currentTasks) => [
-      ...currentTasks,
-      task
-    ]);
-
-    setNewTask({
+  // Reset form
+  function resetForm() {
+    setFormData({
       title: "",
       subject: "",
       time: "",
       priority: "Medium"
     });
 
+    setEditingTask(null);
     setShowForm(false);
   }
 
-  // 9. Delete task
-  function deleteTask(taskId) {
-    setTaskList((currentTasks) =>
-      currentTasks.filter(
-        (task) => task.id !== taskId
-      )
-    );
+  // Open add form
+  function handleAddClick() {
+    setEditingTask(null);
+
+    setFormData({
+      title: "",
+      subject: "",
+      time: "",
+      priority: "Medium"
+    });
+
+    setShowForm(true);
   }
 
-  // 10. Dashboard UI
+  // Open edit form
+  function handleEdit(task) {
+    setEditingTask(task);
+
+    setFormData({
+      title: task.title,
+      subject: task.subject,
+      time: task.time === "Not scheduled" ? "" : task.time,
+      priority: task.priority
+    });
+
+    setShowForm(true);
+  }
+
+  // Handle input changes
+  function handleChange(event) {
+    const { name, value } = event.target;
+
+    setFormData((previousData) => ({
+      ...previousData,
+      [name]: value
+    }));
+  }
+
+  // Submit add/edit form
+  function handleSubmit(event) {
+    event.preventDefault();
+
+    if (!formData.title.trim() || !formData.subject.trim()) {
+      return;
+    }
+
+    if (editingTask) {
+      updateTask(editingTask.id, formData);
+    } else {
+      addTask(formData);
+    }
+
+    resetForm();
+  }
+
   return (
     <>
-
       {/* Welcome Section */}
-
       <section className="welcome-section">
-
         <div>
           <h1>Welcome back! 👋</h1>
           <p>Let's make today productive.</p>
         </div>
 
+
         <button
+          type="button"
           className="primary-button"
-          onClick={() => setShowForm(!showForm)}
+          onClick={handleAddClick}
         >
           + Add New Task
         </button>
 
+        
       </section>
+      
+        <StudyTimer/>
 
-
-      {/* Add Task Form */}
-
+      {/* Add / Edit Form */}
       {showForm && (
-
-        <form
-          className="task-form"
-          onSubmit={handleAddTask}
-        >
-
-          <h2>Create New Task</h2>
+        <form className="task-form" onSubmit={handleSubmit}>
+          <h2>
+            {editingTask ? "Edit Task" : "Create New Task"}
+          </h2>
 
           <input
             type="text"
             name="title"
             placeholder="Task title"
-            value={newTask.title}
+            value={formData.title}
             onChange={handleChange}
             required
           />
@@ -154,7 +146,7 @@ function Dashboard() {
             type="text"
             name="subject"
             placeholder="Subject"
-            value={newTask.subject}
+            value={formData.subject}
             onChange={handleChange}
             required
           />
@@ -163,13 +155,13 @@ function Dashboard() {
             type="text"
             name="time"
             placeholder="Time (e.g. 10:00 AM)"
-            value={newTask.time}
+            value={formData.time}
             onChange={handleChange}
           />
 
           <select
             name="priority"
-            value={newTask.priority}
+            value={formData.priority}
             onChange={handleChange}
           >
             <option value="Low">Low</option>
@@ -178,33 +170,23 @@ function Dashboard() {
           </select>
 
           <div className="form-actions">
-
-            <button
-              type="submit"
-              className="primary-button"
-            >
-              Save Task
+            <button type="submit" className="primary-button">
+              {editingTask ? "Update Task" : "Save Task"}
             </button>
 
             <button
               type="button"
               className="cancel-button"
-              onClick={() => setShowForm(false)}
+              onClick={resetForm}
             >
               Cancel
             </button>
-
           </div>
-
         </form>
-
       )}
 
-
-      {/* Dynamic Statistics */}
-
+      {/* Statistics */}
       <section className="stats-grid">
-
         <StatCard
           title="Total Tasks"
           value={totalTasks}
@@ -232,91 +214,55 @@ function Dashboard() {
           icon="⌚"
           description="This month"
         />
-
       </section>
 
-
       {/* Dashboard Content */}
-
       <section className="dashboard-content">
-
-        {/* Today's Tasks */}
-
         <div className="tasks-section">
-
           <div className="section-heading">
-
             <div>
               <h2>Today's Tasks</h2>
               <p>Your scheduled activities</p>
             </div>
-
-            <button className="text-button">
-              View All
-            </button>
-
           </div>
 
-
-          {/* Task List */}
-
           <div className="task-list">
-
             {taskList.length === 0 ? (
-
               <p className="empty-message">
                 No tasks available. Add your first task!
               </p>
-
             ) : (
-
               taskList.map((task) => (
-
                 <TaskItem
                   key={task.id}
                   task={task}
                   onToggle={toggleTask}
                   onDelete={deleteTask}
+                  onEdit={handleEdit}
                 />
-
               ))
-
             )}
-
           </div>
-
         </div>
 
-
         {/* Weekly Progress */}
-
         <div className="progress-section">
-
           <h2>Weekly Progress</h2>
-
           <p>Your learning activity this week</p>
 
           <div className="progress-circle">
-
             <div className="progress-inner">
               <h2>75%</h2>
               <span>Completed</span>
             </div>
-
           </div>
 
           <div className="progress-info">
-
             <span>Weekly goal</span>
-
             <strong>15 / 20 hours</strong>
-
           </div>
-
         </div>
-
       </section>
-
     </>
   );
 }

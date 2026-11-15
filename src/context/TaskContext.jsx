@@ -1,9 +1,7 @@
-import {
-  useState,
-  useEffect
-} from "react";
 
-import  TaskContext  from "./TaskContext.js";
+import { useState, useEffect } from "react";
+
+import TaskContext from "./TaskContext.js";
 import { tasks as initialTasks } from "../data/tasks";
 
 export function TaskProvider({ children }) {
@@ -14,7 +12,10 @@ export function TaskProvider({ children }) {
 
       if (savedTasks) {
         const parsedTasks = JSON.parse(savedTasks);
-        return Array.isArray(parsedTasks) ? parsedTasks : initialTasks;
+
+        return Array.isArray(parsedTasks)
+          ? parsedTasks
+          : initialTasks;
       }
 
       return initialTasks;
@@ -24,6 +25,7 @@ export function TaskProvider({ children }) {
     }
   });
 
+  // Save whenever taskList changes
   useEffect(() => {
     try {
       localStorage.setItem(
@@ -35,6 +37,7 @@ export function TaskProvider({ children }) {
     }
   }, [taskList]);
 
+  // Toggle completion
   function toggleTask(taskId) {
     setTaskList((currentTasks) =>
       currentTasks.map((task) =>
@@ -45,6 +48,7 @@ export function TaskProvider({ children }) {
     );
   }
 
+  // Add task
   function addTask(taskData) {
     const newTask = {
       id: Date.now(),
@@ -61,6 +65,7 @@ export function TaskProvider({ children }) {
     ]);
   }
 
+  // Update task
   function updateTask(taskId, updatedData) {
     setTaskList((currentTasks) =>
       currentTasks.map((task) =>
@@ -77,6 +82,7 @@ export function TaskProvider({ children }) {
     );
   }
 
+  // Delete task
   function deleteTask(taskId) {
     setTaskList((currentTasks) =>
       currentTasks.filter((task) => task.id !== taskId)
@@ -85,9 +91,9 @@ export function TaskProvider({ children }) {
 
   const value = {
     taskList,
-    toggleTask,
     addTask,
     updateTask,
+    toggleTask,
     deleteTask
   };
 

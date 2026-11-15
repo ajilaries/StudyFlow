@@ -700,3 +700,105 @@
     padding: 5px 8px;
   }
 }
+
+/* ================================
+   Study Timer
+================================ */
+
+.study-timer {
+  background: #ffffff;
+  border: 1px solid #eeeeF2;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.timer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.timer-header h2 {
+  margin: 0 0 6px;
+}
+
+.timer-header p {
+  color: #888;
+  margin: 0;
+}
+
+.timer-status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: #f1f1f5;
+  font-size: 13px;
+  text-transform: capitalize;
+}
+
+.timer-status.running {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.timer-status.paused {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.timer-display {
+  text-align: center;
+  padding: 32px 12px;
+}
+
+.timer-display h1 {
+  font-size: 48px;
+  letter-spacing: 4px;
+  margin: 0 0 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.timer-display p {
+  color: #777;
+  margin: 0;
+}
+
+.timer-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.timer-controls select {
+  padding: 11px 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  min-width: 200px;
+}
+
+.timer-controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+  .study-timer {
+    padding: 18px;
+  }
+
+  .timer-display h1 {
+    font-size: 36px;
+  }
+
+  .timer-controls {
+    flex-direction: column;
+  }
+
+  .timer-controls select,
+  .timer-controls button {
+    width: 100%;
+  }
+}

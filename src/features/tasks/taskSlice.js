@@ -1,52 +1,76 @@
+
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState=[];
+const initialState = [];
 
-const taskSlice=createSlice({
-    name:"tasks",
+const taskSlice = createSlice({
+  name: "tasks",
 
-    initialState,
+  initialState,
 
-    reducers:{
-        // Create
-        addTask:(state,action)=>{
-            state.push(action.payload);
-        },
+  reducers: {
 
-        // update
-        updateTask:(state,action)=>{
-            const {id, updatedData}=action.payload;
+    // Create task
+    addTask: {
+      reducer: (state, action) => {
+        state.push(action.payload);
+      },
 
-            const task=state.find((task)=>task.id===id);
+      prepare: (taskData) => {
+        return {
+          payload: {
+            id: Date.now(),
+            title: taskData.title.trim(),
+            subject: taskData.subject.trim(),
+            time: taskData.time.trim() || "Not scheduled",
+            priority: taskData.priority,
+            completed: false
+          }
+        };
+      }
+    },
 
-            if(task){
-                Object.assign(task,updatedData);
+    // Update task
+    updateTask: (state, action) => {
+      const { taskId, updatedData } = action.payload;
 
-            }
-        },
-        // Toggle completion
-        toggleTask:(state,action)=>{
-            const task=state.find(
-                (task)=>task.id===action.payload
-            );
-            if(task){
-                task.completed=!task.completed;
-            }
-        },
-        // delete
-        deleteTask:(state,action)=>{
-            return state.filter(
-                (task)=>task.id!==action.payload
-            );
-        }
+      const task = state.find(
+        (task) => task.id === taskId
+      );
+
+      if (task) {
+        task.title = updatedData.title.trim();
+        task.subject = updatedData.subject.trim();
+        task.time = updatedData.time.trim() || "Not scheduled";
+        task.priority = updatedData.priority;
+      }
+    },
+
+    // Toggle completion
+    toggleTask: (state, action) => {
+      const task = state.find(
+        (task) => task.id === action.payload
+      );
+
+      if (task) {
+        task.completed = !task.completed;
+      }
+    },
+
+    // Delete task
+    deleteTask: (state, action) => {
+      return state.filter(
+        (task) => task.id !== action.payload
+      );
     }
+  }
 });
-export const{
-    addTask,
-    updateTask,
-    toggleTask,
-    deleteTask
-}=taskSlice.actions;
 
+export const {
+  addTask,
+  updateTask,
+  toggleTask,
+  deleteTask
+} = taskSlice.actions;
 
 export default taskSlice.reducer;

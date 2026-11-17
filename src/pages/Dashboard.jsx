@@ -1,21 +1,29 @@
 
 import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
 import StatCard from "../components/StatCard";
 import TaskItem from "../components/TaskItem";
-import { useTasks } from "../context/useTasks";
 import StudyTimer from "../components/StudyTimer";
 
+import {
+  addTask,
+  updateTask,
+  toggleTask,
+  deleteTask
+} from "../features/tasks/taskSlice";
 
 function Dashboard() {
-  const {
-    taskList,
-    addTask,
-    updateTask,
-    toggleTask,
-    deleteTask
-  } = useTasks();
 
+  // Read shared task state from Redux
+  const taskList = useSelector(
+    (state) => state.tasks
+  );
+
+  // Get Redux dispatch function
+  const dispatch = useDispatch();
+
+  // Local UI state
   const [showForm, setShowForm] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
 
@@ -95,9 +103,14 @@ function Dashboard() {
     }
 
     if (editingTask) {
-      updateTask(editingTask.id, formData);
+      dispatch(
+        updateTask({
+          taskId: editingTask.id,
+          updatedData: formData
+        })
+      );
     } else {
-      addTask(formData);
+      dispatch(addTask(formData));
     }
 
     resetForm();
@@ -112,7 +125,6 @@ function Dashboard() {
           <p>Let's make today productive.</p>
         </div>
 
-
         <button
           type="button"
           className="primary-button"
@@ -120,11 +132,9 @@ function Dashboard() {
         >
           + Add New Task
         </button>
-
-        
       </section>
-      
-        <StudyTimer/>
+
+      <StudyTimer />
 
       {/* Add / Edit Form */}
       {showForm && (
@@ -236,8 +246,12 @@ function Dashboard() {
                 <TaskItem
                   key={task.id}
                   task={task}
-                  onToggle={toggleTask}
-                  onDelete={deleteTask}
+                  onToggle={(taskId) =>
+                    dispatch(toggleTask(taskId))
+                  }
+                  onDelete={(taskId) =>
+                    dispatch(deleteTask(taskId))
+                  }
                   onEdit={handleEdit}
                 />
               ))

@@ -1,26 +1,53 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
-import { useTasks } from "../context/useTasks";
-import { useStudySession } from "../context/useStudySession";
+import {
+  startSession,
+  pauseSession,
+  resumeSession,
+  stopSession
+} from "../features/tasks/sessions/sessionSlice";
 
 function StudyTimer() {
-  const { taskList } = useTasks();
+  const dispatch = useDispatch();
 
+  // Read tasks from Redux
+  const taskList = useSelector(state => state.tasks);
+
+  // Read session state from Redux
   const {
     status,
     selectedTaskId,
     elapsedMs,
-    startSession,
-    pauseSession,
-    resumeSession,
-    stopSession
-  } = useStudySession();
+    startedAt
+  } = useSelector(state => state.sessions);
 
+  // Local UI state
   const [taskId, setTaskId] = useState("");
 
+  // Current timestamp for timer display
+  const [currentTime, setCurrentTime] = useState(() => Date.now());
+
+  // Update current time every second
+  useEffect(() => {
+    if (status !== "running") return;
+
+    const interval = setInterval(() => {
+      setCurrentTime(Date.now());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [status]);
+
+  // Calculate elapsed time
+  const currentElapsedMs =
+    status === "running" && startedAt !== null
+      ? elapsedMs + (currentTime - startedAt)
+      : elapsedMs;
+
   // Convert milliseconds into HH:MM:SS
-  const totalSeconds = Math.floor(elapsedMs / 1000);
+  const totalSeconds = Math.floor(currentElapsedMs / 1000);
 
   const hours = String(
     Math.floor(totalSeconds / 3600)
@@ -34,23 +61,61 @@ function StudyTimer() {
     totalSeconds % 60
   ).padStart(2, "0");
 
-  // Start studying
-  function handleStart() {
-    if (!taskId) return;
-
-    startSession(Number(taskId));
-  }
-
-  // Stop and save will be connected to session history next
-function handleStop() {
-  stopSession();
-}
+  // Find selected task
   const selectedTask = taskList.find(
     task => task.id === selectedTaskId
   );
 
+  // Start session
+  function handleStart() {
+    if (!taskId) return;
+
+    const now = Date.now();
+
+    dispatch(startSession({
+      taskId: Number(taskId),
+      now,
+      startedAtISO: new Date(now).toISOString()
+    }));
+
+    setCurrentTime(now);
+  }
+
+  // Pause session
+  function handlePause() {
+    const now = Date.now();
+
+    dispatch(pauseSession({ now }));
+
+    setCurrentTime(now);
+  }
+
+  // Resume session
+  function handleResume() {
+    const now = Date.now();
+
+    dispatch(resumeSession({ now }));
+
+    setCurrentTime(now);
+  }
+
+  // Stop session
+  function handleStop() {
+    const now = Date.now();
+
+    dispatch(stopSession({
+      now,
+      completedAt: new Date(now).toISOString(),
+      sessionId: now
+    }));
+
+    setTaskId("");
+    setCurrentTime(now);
+  }
+
   return (
     <section className="study-timer">
+
       <div className="timer-header">
         <div>
           <h2>Study Timer</h2>
@@ -76,9 +141,10 @@ function handleStop() {
 
       {status === "idle" && (
         <div className="timer-controls">
+
           <select
             value={taskId}
-            onChange={(event) => setTaskId(event.target.value)}
+            onChange={event => setTaskId(event.target.value)}
           >
             <option value="">Select a task</option>
 
@@ -101,15 +167,17 @@ function handleStop() {
           >
             Start Studying
           </button>
+
         </div>
       )}
 
       {status === "running" && (
         <div className="timer-controls">
+
           <button
             type="button"
             className="cancel-button"
-            onClick={pauseSession}
+            onClick={handlePause}
           >
             Pause
           </button>
@@ -121,15 +189,17 @@ function handleStop() {
           >
             Stop Session
           </button>
+
         </div>
       )}
 
       {status === "paused" && (
         <div className="timer-controls">
+
           <button
             type="button"
             className="primary-button"
-            onClick={resumeSession}
+            onClick={handleResume}
           >
             Resume
           </button>
@@ -141,8 +211,10 @@ function handleStop() {
           >
             Stop Session
           </button>
+
         </div>
       )}
+
     </section>
   );
 }

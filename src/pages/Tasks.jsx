@@ -1,17 +1,25 @@
 
 import { useMemo, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
-import { useTasks } from "../context/useTasks";
+import {
+  addTask,
+  updateTask,
+  toggleTask,
+  deleteTask
+} from "../features/tasks/taskSlice";
+
 import TaskItem from "../components/TaskItem";
 
 function Tasks() {
-  const {
-    taskList,
-    addTask,
-    updateTask,
-    toggleTask,
-    deleteTask
-  } = useTasks();
+
+  // Read task state from Redux
+  const taskList = useSelector(
+    (state) => state.tasks
+  );
+
+  // Get dispatch function
+  const dispatch = useDispatch();
 
   // UI states
   const [search, setSearch] = useState("");
@@ -148,9 +156,14 @@ function Tasks() {
     }
 
     if (editingTask) {
-      updateTask(editingTask.id, formData);
+      dispatch(
+        updateTask({
+          taskId: editingTask.id,
+          updatedData: formData
+        })
+      );
     } else {
-      addTask(formData);
+      dispatch(addTask(formData));
     }
 
     setShowForm(false);
@@ -372,8 +385,12 @@ function Tasks() {
               <TaskItem
                 key={task.id}
                 task={task}
-                onToggle={toggleTask}
-                onDelete={deleteTask}
+                onToggle={(taskId) =>
+                  dispatch(toggleTask(taskId))
+                }
+                onDelete={(taskId) =>
+                  dispatch(deleteTask(taskId))
+                }
                 onEdit={handleEdit}
               />
             ))

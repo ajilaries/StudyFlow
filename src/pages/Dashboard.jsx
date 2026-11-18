@@ -2,10 +2,15 @@
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-import StatCard from "../components/StatCard";
-import TaskItem from "../components/TaskItem";
-import StudyTimer from "../components/StudyTimer";
+// Redux selectors
+import {
+  selectAllTasks,
+  selectPendingTasks,
+  selectTotalTasks,
+  selectCompletedCount
+} from "../features/tasks/taskSelectors";
 
+// Redux actions
 import {
   addTask,
   updateTask,
@@ -13,12 +18,21 @@ import {
   deleteTask
 } from "../features/tasks/taskSlice";
 
+// Components
+import StatCard from "../components/StatCard";
+import TaskItem from "../components/TaskItem";
+import StudyTimer from "../components/StudyTimer";
+
 function Dashboard() {
 
-  // Read shared task state from Redux
-  const taskList = useSelector(
-    (state) => state.tasks
-  );
+  // Get task data using Redux selectors
+  const taskList = useSelector(selectAllTasks);
+
+  const pendingTaskList = useSelector(selectPendingTasks);
+
+  const totalTasks = useSelector(selectTotalTasks);
+
+  const completedTasks = useSelector(selectCompletedCount);
 
   // Get Redux dispatch function
   const dispatch = useDispatch();
@@ -35,13 +49,7 @@ function Dashboard() {
   });
 
   // Task statistics
-  const totalTasks = taskList.length;
-
-  const completedTasks = taskList.filter(
-    (task) => task.completed
-  ).length;
-
-  const pendingTasks = totalTasks - completedTasks;
+  const pendingTasks = pendingTaskList.length;
 
   // Reset form
   function resetForm() {
@@ -134,6 +142,7 @@ function Dashboard() {
         </button>
       </section>
 
+      {/* Study Timer */}
       <StudyTimer />
 
       {/* Add / Edit Form */}
@@ -228,6 +237,8 @@ function Dashboard() {
 
       {/* Dashboard Content */}
       <section className="dashboard-content">
+
+        {/* Tasks Section */}
         <div className="tasks-section">
           <div className="section-heading">
             <div>
@@ -276,6 +287,7 @@ function Dashboard() {
             <strong>15 / 20 hours</strong>
           </div>
         </div>
+
       </section>
     </>
   );

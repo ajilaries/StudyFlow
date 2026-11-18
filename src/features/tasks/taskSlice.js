@@ -1,7 +1,27 @@
 
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = [];
+const initialState = loadTasks;
+
+function loadTasks(){
+  try{
+    const savedTasks=localStorage.getItem("studyflow_tasks");
+
+    if(savedTasks){
+      const parsedTasks=JSON.parse(savedTasks);
+
+      return Array.isArray(parsedTasks)? parsedTasks:[];
+
+    }
+
+    return [];
+
+
+  }catch(error){
+    console.error("Failed to load tasks",error);
+    return [];
+  }
+}
 
 const taskSlice = createSlice({
   name: "tasks",

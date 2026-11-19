@@ -44,6 +44,7 @@ function Dashboard() {
   const [formData, setFormData] = useState({
     title: "",
     subject: "",
+    date:"",
     time: "",
     priority: "Medium"
   });
@@ -56,6 +57,7 @@ function Dashboard() {
     setFormData({
       title: "",
       subject: "",
+      date:"",
       time: "",
       priority: "Medium"
     });
@@ -71,6 +73,7 @@ function Dashboard() {
     setFormData({
       title: "",
       subject: "",
+      date:"",
       time: "",
       priority: "Medium"
     });
@@ -84,6 +87,7 @@ function Dashboard() {
 
     setFormData({
       title: task.title,
+      date:task.date,
       subject: task.subject,
       time: task.time === "Not scheduled" ? "" : task.time,
       priority: task.priority
@@ -169,7 +173,12 @@ function Dashboard() {
             onChange={handleChange}
             required
           />
-
+          <input
+          type="date"
+          name="date"
+          value={formData.date}
+          onChange={handleChange}
+          />
           <input
             type="text"
             name="time"

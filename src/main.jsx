@@ -8,6 +8,7 @@ import { store } from "./app/store";
 
 import "./styles/global.css";
 import "./styles/dashboard.css";
+import "./styles/calendar.css"
 
 ReactDOM.createRoot(
   document.getElementById("root")

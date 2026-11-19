@@ -107,6 +107,7 @@ function Tasks() {
     setFormData({
       title: "",
       subject: "",
+      date:"",
       time: "",
       priority: "Medium"
     });
@@ -122,6 +123,7 @@ function Tasks() {
     setFormData({
       title: task.title,
       subject: task.subject,
+      date:task.date,
       time:
         task.time === "Not scheduled"
           ? ""
@@ -284,6 +286,11 @@ function Tasks() {
             onChange={handleChange}
           />
 
+          <label htmlFor="date">Date</label>
+          <input type="date"
+          name="date"
+          value={formData.date} 
+          onChange={handleChange}/>
           <label htmlFor="time">Time</label>
 
           <input

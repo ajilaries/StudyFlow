@@ -1,0 +1,267 @@
+
+/* Calendar Page */
+
+.calendar-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.calendar-header h1 {
+  margin: 0 0 8px;
+}
+
+.calendar-header p {
+  margin: 0;
+  opacity: 0.7;
+}
+
+.calendar-card,
+.selected-date-section {
+  background: var(--card-bg, #ffffff);
+  border: 1px solid var(--border-color, #e8e8ee);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.calendar-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.calendar-toolbar h2 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.calendar-nav-button {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--border-color, #e8e8ee);
+  background: transparent;
+  border-radius: 10px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.calendar-nav-button:hover {
+  background: #6755e8;
+  color: white;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.calendar-weekdays {
+  margin-bottom: 10px;
+}
+
+.calendar-weekday {
+  text-align: center;
+  padding: 10px 2px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  opacity: 0.65;
+}
+
+.calendar-day {
+  min-width: 0;
+  min-height: 75px;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 12px;
+  padding: 10px 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background 0.2s, border 0.2s;
+}
+
+.calendar-day:hover {
+  background: rgba(103, 85, 232, 0.08);
+  border-color: rgba(103, 85, 232, 0.25);
+}
+
+.calendar-day-number {
+  font-size: 0.95rem;
+}
+
+.calendar-day.other-month {
+  opacity: 0.35;
+}
+
+.calendar-day.today .calendar-day-number {
+  background: #6755e8;
+  color: #fff;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+}
+
+.calendar-day.selected {
+  background: rgba(103, 85, 232, 0.1);
+  border-color: #6755e8;
+}
+
+.calendar-task-indicators {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3px;
+  flex-wrap: wrap;
+}
+
+.calendar-task-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #6755e8;
+}
+
+.calendar-task-dot.completed {
+  background: #27ae60;
+}
+
+.calendar-more-tasks {
+  font-size: 0.65rem;
+}
+
+.selected-date-section h2 {
+  margin: 0 0 6px;
+}
+
+.selected-date-header p {
+  opacity: 0.65;
+  margin: 0;
+}
+
+.selected-date-tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.calendar-task-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  border: 1px solid var(--border-color, #e8e8ee);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.calendar-task-info h3 {
+  margin: 0 0 6px;
+}
+
+.calendar-task-info p {
+  margin: 0 0 8px;
+  opacity: 0.65;
+}
+
+.calendar-task-time {
+  font-size: 0.85rem;
+  opacity: 0.75;
+}
+
+.calendar-task-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.priority-badge,
+.calendar-task-status {
+  font-size: 0.8rem;
+  border-radius: 20px;
+  padding: 5px 10px;
+}
+
+.priority-high {
+  background: #ffe6e6;
+  color: #c0392b;
+}
+
+.priority-medium {
+  background: #fff3d6;
+  color: #946200;
+}
+
+.priority-low {
+  background: #e5f5e9;
+  color: #218c4b;
+}
+
+.calendar-task-status.completed {
+  color: #218c4b;
+}
+
+.calendar-task-status.pending {
+  color: #6755e8;
+}
+
+.calendar-empty-state {
+  text-align: center;
+  padding: 30px 15px;
+  opacity: 0.65;
+}
+
+/* Responsive Calendar */
+@media (max-width: 600px) {
+  .calendar-card,
+  .selected-date-section {
+    padding: 12px;
+  }
+
+  .calendar-day {
+    min-height: 55px;
+    padding: 7px 2px;
+    border-radius: 8px;
+  }
+
+  .calendar-weekday {
+    font-size: 0.72rem;
+  }
+
+  .calendar-day-number {
+    font-size: 0.82rem;
+  }
+
+  .calendar-task-indicators {
+    gap: 2px;
+  }
+
+  .calendar-task-dot {
+    width: 5px;
+    height: 5px;
+  }
+
+  .calendar-task-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .calendar-task-meta {
+    flex-direction: row;
+    align-items: center;
+  }
+}

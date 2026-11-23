@@ -15,6 +15,9 @@ function Calendar() {
   // Tasks from Redux
   const taskList = useSelector(selectAllTasks);
 
+
+  console.log("All the tasks",taskList);
+
   // Today's date
   const today = new Date();
 

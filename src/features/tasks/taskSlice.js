@@ -42,6 +42,7 @@ const taskSlice = createSlice({
             id: Date.now(),
             title: taskData.title.trim(),
             subject: taskData.subject.trim(),
+            date:taskData.date,
             time: taskData.time.trim() || "Not scheduled",
             priority: taskData.priority,
             completed: false
@@ -61,6 +62,7 @@ const taskSlice = createSlice({
       if (task) {
         task.title = updatedData.title.trim();
         task.subject = updatedData.subject.trim();
+        task.date=updatedData.date.trim();
         task.time = updatedData.time.trim() || "Not scheduled";
         task.priority = updatedData.priority;
       }

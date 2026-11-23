@@ -10,6 +10,14 @@ import {
   selectCompletedCount
 } from "../features/tasks/taskSelectors";
 
+
+import {
+  selectTotalStudyTime,
+  selectWeeklyStudyTime,
+  formatStudyTime
+} from "../features/tasks/sessions/sessionSelectors";
+
+
 // Redux actions
 import {
   addTask,
@@ -24,6 +32,23 @@ import TaskItem from "../components/TaskItem";
 import StudyTimer from "../components/StudyTimer";
 
 function Dashboard() {
+
+
+  // study statistics from redux
+
+  const totalStudyTime=formatStudyTime(selectTotalStudyTime);
+
+  const weeklyStudyTime=formatStudyTime(selectWeeklyStudyTime);
+
+  const formattedTotalStudyTime=formatStudyTime(totalStudyTime);
+
+  const formattedWeeklyStudyTime=formatStudyTime(weeklyStudyTime);
+
+  const weeklyGoalMs= 20* 60* 60* 1000;
+
+  const weeklyProgress=Math.min(
+    Math.round((weeklyStudyTime/ weeklyGoalMs) * 100)
+  )
 
   // Get task data using Redux selectors
   const taskList = useSelector(selectAllTasks);
@@ -238,7 +263,7 @@ function Dashboard() {
 
         <StatCard
           title="Study Hours"
-          value="32h"
+          value={formattedTotalStudyTime}
           icon="⌚"
           description="This month"
         />
@@ -286,14 +311,14 @@ function Dashboard() {
 
           <div className="progress-circle">
             <div className="progress-inner">
-              <h2>75%</h2>
+              <h2>{weeklyProgress}%</h2>
               <span>Completed</span>
             </div>
           </div>
 
           <div className="progress-info">
             <span>Weekly goal</span>
-            <strong>15 / 20 hours</strong>
+            <strong>{formattedWeeklyStudyTime} / 20</strong>
           </div>
         </div>
 
